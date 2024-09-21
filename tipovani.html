@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tipování | MMA Tipování</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>🏆 Vyberte zápas a tipujte! 🥇</h2>
+        <form id="tipFormDetails" class="mt-4">
+            <div class="mb-3">
+                <label for="match" class="form-label">🛡️ Zápas:</label>
+                <select id="match" class="form-select"></select>
+            </div>
+            <div class="mb-3">
+                <label for="winner" class="form-label">👑 Vítěz:</label>
+                <input type="text" id="winner" class="form-control" placeholder="Jméno vítěze">
+            </div>
+            <div class="mb-3">
+                <label for="method" class="form-label">⚔️ Způsob ukončení:</label>
+                <select id="method" class="form-select">
+                    <option value="KO">🥊 KO</option>
+                    <option value="TKO">💥 TKO</option>
+                    <option value="SUBMISE">🤼 SUBMISE</option>
+                    <option value="BODY">📊 BODY</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-success">💾 Uložit tip</button>
+        </form>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -77,8 +77,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const tipItem = document.createElement('li');
             tipItem.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
             tipItem.innerHTML = `
-                🛡️ <strong>${tip.match}</strong> – 👑 <strong>${tip.winner}</strong> – ⚔️ <strong>${tip.method}</strong>
+                🛡️<strong>${tip.match}</strong>👑<strong>${tip.winner}</strong>⚔️<strong>${tip.method}</strong>
                 <div>
+                <br>
                     <button class="btn btn-success btn-sm me-2" onclick="markTip(${index}, true)">Správně ✅</button>
                     <button class="btn btn-danger btn-sm" onclick="markTip(${index}, false)">Špatně ❌</button>
                 </div>

@@ -81,6 +81,7 @@ tips.forEach((tip, index) => {
             <button class="btn btn-success btn-sm me-2" onclick="markTip(${index}, true)">Správně ✅</button>
             <button class="btn btn-danger btn-sm" onclick="markTip(${index}, false)">Špatně ❌</button>
         </div>
+        <br>
         🛡️<strong>${tip.match}</strong>👑<strong>${tip.winner}</strong>⚔️<strong>${tip.method}</strong>
     `;
             if (tip.result === true) {

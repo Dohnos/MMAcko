@@ -82,7 +82,7 @@ tips.forEach((tip, index) => {
             <button class="btn btn-danger btn-sm" onclick="markTip(${index}, false)">Špatně ❌</button>
         </div>
         <br>
-        🛡️<strong>${tip.match}</strong>👑<strong>${tip.winner}</strong>⚔️<strong>${tip.method}</strong>
+        🛡️ZÁPAS<strong>${tip.match}</strong><br>👑VÍTĚZ<strong>${tip.winner}</strong>⚔️ZPŮSOB<strong>${tip.method}</strong>
     `;
             if (tip.result === true) {
                 tipItem.classList.add('list-group-item-success');

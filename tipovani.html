@@ -17,7 +17,9 @@
             </div>
             <div class="mb-3">
                 <label for="winner" class="form-label">👑 Vítěz:</label>
-                <input type="text" id="winner" class="form-control" placeholder="Jméno vítěze">
+                <select id="winner" class="form-select">
+                    <option value="">Vyberte zápas</option>
+                </select>
             </div>
             <div class="mb-3">
                 <label for="method" class="form-label">⚔️ Způsob ukončení:</label>
@@ -30,6 +32,17 @@
             </div>
             <button type="submit" class="btn btn-success">💾 Uložit tip</button>
         </form>
+
+        <div id="savedTips" class="mt-5">
+            <h3>📋 Uložené tipy:</h3>
+            <ul id="tipList" class="list-group"></ul>
+        </div>
+
+        <div id="stats" class="mt-4">
+            <h4>📊 Statistika:</h4>
+            <p>Správné tipy: <span id="correctCount">0</span></p>
+            <p>Špatné tipy: <span id="wrongCount">0</span></p>
+        </div>
     </div>
 
     <script src="script.js"></script>

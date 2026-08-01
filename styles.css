@@ -1,25 +1,993 @@
+/* =============================================================
+   MMA TIPOVÁNÍ — Neo-brutalist Design System
+   Minimalistický neobrutalismus · Black & White · kulaté tvary
+   Bez externích závislostí (žádné CDN, žádné webfonty)
+   ============================================================= */
+
+/* -------------------------------------------------------------
+   1. DESIGN TOKENY
+   ------------------------------------------------------------- */
+:root {
+    color-scheme: light dark;
+
+    /* Paleta — pouze černá, bílá a odstíny šedi */
+    --ink: #000000;
+    --paper: #ffffff;
+    --surface: #f4f4f4;
+    --muted: #6b6b6b;
+    --hairline: #dcdcdc;
+
+    /* Rámečky */
+    --b: 3px;
+    --b-thin: 2px;
+
+    /* Zaoblení — nikde žádné ostré rohy */
+    --r-xl: 34px;
+    --r-lg: 26px;
+    --r-md: 18px;
+    --r-sm: 14px;
+    --r-pill: 999px;
+
+    /* Ostré (neblurované) stíny — podpis neobrutalismu */
+    --shadow-sm: 3px 3px 0 var(--ink);
+    --shadow: 5px 5px 0 var(--ink);
+    --shadow-lg: 8px 8px 0 var(--ink);
+
+    /* Rytmus */
+    --gap: clamp(0.75rem, 2vw, 1.25rem);
+    --pad: clamp(1.1rem, 3vw, 1.9rem);
+    --maxw: 62rem;
+
+    --ease: cubic-bezier(0.2, 0.8, 0.3, 1);
+}
+
+/* Tmavý režim = prostá inverze. Stále čistě černobílé. */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --ink: #ffffff;
+        --paper: #0b0b0b;
+        --surface: #171717;
+        --muted: #a3a3a3;
+        --hairline: #2e2e2e;
+    }
+}
+
+/* Ruční přepínač vždy přebíjí systémové nastavení */
+:root[data-theme="light"] {
+    --ink: #000000;
+    --paper: #ffffff;
+    --surface: #f4f4f4;
+    --muted: #6b6b6b;
+    --hairline: #dcdcdc;
+}
+
+:root[data-theme="dark"] {
+    --ink: #ffffff;
+    --paper: #0b0b0b;
+    --surface: #171717;
+    --muted: #a3a3a3;
+    --hairline: #2e2e2e;
+}
+
+/* -------------------------------------------------------------
+   2. RESET
+   ------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+* {
+    margin: 0;
+}
+
+/* Komponenty níže mají vlastní display, atribut hidden je musí přebít */
+[hidden] {
+    display: none !important;
+}
+
+html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+}
+
 body {
-    background-color: #f8f9fa;
-    font-family: Arial, sans-serif;
+    min-height: 100dvh;
+    background-color: var(--paper);
+    color: var(--ink);
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+        "Helvetica Neue", Arial, sans-serif;
+    font-size: clamp(1rem, 0.95rem + 0.2vw, 1.0625rem);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+
+    /* Jemný rastr na pozadí — drží plochu „papírovou“, ne prázdnou */
+    background-image: radial-gradient(var(--hairline) 1.2px, transparent 1.2px);
+    background-size: 22px 22px;
 }
-h1, h2, h3, h4 {
-    color: #343a40;
+
+img,
+svg {
+    display: block;
+    max-width: 100%;
 }
+
+input,
+button,
+select,
+textarea {
+    font: inherit;
+    color: inherit;
+}
+
+/* -------------------------------------------------------------
+   3. TYPOGRAFIE
+   ------------------------------------------------------------- */
+h1,
+h2,
+h3,
+h4 {
+    font-weight: 900;
+    line-height: 1.08;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+}
+
 h1 {
-    font-size: 2.5rem;
+    font-size: clamp(2rem, 1.4rem + 3.2vw, 3.4rem);
+    text-transform: uppercase;
 }
+
 h2 {
-    font-size: 2rem;
+    font-size: clamp(1.5rem, 1.2rem + 1.5vw, 2.1rem);
+    text-transform: uppercase;
 }
-h3, h4 {
-    font-size: 1.5rem;
+
+h3 {
+    font-size: clamp(1.15rem, 1.05rem + 0.5vw, 1.4rem);
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
 }
-.list-group-item-success {
-    background-color: #d4edda;
+
+h4 {
+    font-size: 1.05rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
 }
-.list-group-item-danger {
-    background-color: #f8d7da;
+
+.lead {
+    font-size: clamp(1.05rem, 1rem + 0.4vw, 1.25rem);
+    color: var(--muted);
+    max-width: 46ch;
+    text-wrap: pretty;
 }
-.btn-success, .btn-danger {
-    font-size: 0.875rem;
+
+.eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* -------------------------------------------------------------
+   4. IKONY (inline SVG, dědí barvu textu)
+   ------------------------------------------------------------- */
+.icon {
+    width: 1.15em;
+    height: 1.15em;
+    flex: 0 0 auto;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    vertical-align: -0.2em;
+}
+
+.icon--lg {
+    width: 1.7em;
+    height: 1.7em;
+    stroke-width: 1.8;
+}
+
+.icon--fill {
+    fill: currentColor;
+    stroke: none;
+}
+
+/* -------------------------------------------------------------
+   5. LAYOUT
+   ------------------------------------------------------------- */
+.wrap {
+    width: min(100% - 2rem, var(--maxw));
+    margin-inline: auto;
+    padding-block: clamp(1.25rem, 4vw, 2.5rem) 4rem;
+}
+
+.stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap);
+}
+
+.stack--lg {
+    gap: clamp(1.5rem, 4vw, 2.5rem);
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.7rem;
+}
+
+.row--between {
+    justify-content: space-between;
+}
+
+.grid-2 {
+    display: grid;
+    gap: var(--gap);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+}
+
+.grid-3 {
+    display: grid;
+    gap: var(--gap);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
+}
+
+/* -------------------------------------------------------------
+   6. TOPBAR
+   ------------------------------------------------------------- */
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.55rem 0.6rem 0.55rem 1.15rem;
+    margin-bottom: clamp(1.5rem, 4vw, 2.5rem);
+    background: var(--paper);
+    border: var(--b) solid var(--ink);
+    border-radius: var(--r-pill);
+    box-shadow: var(--shadow);
+}
+
+.brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-weight: 900;
+    font-size: 0.95rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: inherit;
+    border-radius: var(--r-pill);
+}
+
+.brand__mark {
+    display: grid;
+    place-items: center;
+    width: 2.15rem;
+    height: 2.15rem;
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: 50%;
+}
+
+.brand__mark .icon {
+    width: 1.2rem;
+    height: 1.2rem;
+}
+
+.topbar__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* -------------------------------------------------------------
+   7. TLAČÍTKA
+   ------------------------------------------------------------- */
+.btn {
+    --btn-bg: var(--paper);
+    --btn-fg: var(--ink);
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    padding: 0.72rem 1.35rem;
+    min-height: 2.9rem;
+    background: var(--btn-bg);
+    color: var(--btn-fg);
+    font-weight: 800;
+    font-size: 0.95rem;
+    letter-spacing: 0.02em;
+    text-decoration: none;
+    text-align: center;
+    border: var(--b) solid var(--ink);
+    border-radius: var(--r-pill);
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    transition: transform 0.14s var(--ease), box-shadow 0.14s var(--ease),
+        background-color 0.14s var(--ease), color 0.14s var(--ease);
+}
+
+.btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.btn:active {
+    transform: translate(3px, 3px);
+    box-shadow: 0 0 0 var(--ink);
+}
+
+.btn--solid {
+    --btn-bg: var(--ink);
+    --btn-fg: var(--paper);
+}
+
+.btn--lg {
+    padding: 1rem 1.9rem;
+    min-height: 3.5rem;
+    font-size: 1.05rem;
+}
+
+.btn--sm {
+    padding: 0.45rem 0.95rem;
+    min-height: 2.35rem;
+    font-size: 0.85rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.btn--sm:hover {
+    box-shadow: var(--shadow);
+}
+
+.btn--icon {
+    padding: 0;
+    width: 2.9rem;
+    min-height: 2.9rem;
+    border-radius: 50%;
+    box-shadow: var(--shadow-sm);
+}
+
+.btn--icon:hover {
+    box-shadow: var(--shadow);
+}
+
+.btn--block {
+    width: 100%;
+}
+
+.btn[disabled],
+.btn[aria-disabled="true"] {
+    opacity: 0.35;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* Viditelný fokus pro klávesnici */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+    outline: var(--b) solid var(--ink);
+    outline-offset: 3px;
+}
+
+/* -------------------------------------------------------------
+   8. KARTY
+   ------------------------------------------------------------- */
+.card {
+    padding: var(--pad);
+    background: var(--paper);
+    border: var(--b) solid var(--ink);
+    border-radius: var(--r-lg);
+    box-shadow: var(--shadow);
+}
+
+.card--flat {
+    box-shadow: none;
+}
+
+.card--hero {
+    border-radius: var(--r-xl);
+    box-shadow: var(--shadow-lg);
+}
+
+.card__title {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.35rem;
+}
+
+/* Klikatelná karta (rozcestník na úvodní stránce) */
+.tile {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: var(--pad);
+    background: var(--paper);
+    color: inherit;
+    text-decoration: none;
+    border: var(--b) solid var(--ink);
+    border-radius: var(--r-xl);
+    box-shadow: var(--shadow);
+    transition: transform 0.16s var(--ease), box-shadow 0.16s var(--ease),
+        background-color 0.16s var(--ease), color 0.16s var(--ease);
+}
+
+.tile:hover,
+.tile:focus-visible {
+    transform: translate(-3px, -3px);
+    box-shadow: var(--shadow-lg);
+    background: var(--ink);
+    color: var(--paper);
+}
+
+.tile:hover .tile__badge,
+.tile:focus-visible .tile__badge {
+    background: var(--paper);
+    color: var(--ink);
+}
+
+.tile:hover .tile__text,
+.tile:focus-visible .tile__text {
+    color: inherit;
+    opacity: 0.85;
+}
+
+.tile:active {
+    transform: translate(2px, 2px);
+    box-shadow: var(--shadow-sm);
+}
+
+.tile__badge {
+    display: grid;
+    place-items: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: 50%;
+    transition: inherit;
+}
+
+.tile__title {
+    font-size: 1.3rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+}
+
+.tile__text {
+    color: var(--muted);
+    font-size: 0.95rem;
+    text-wrap: pretty;
+}
+
+.tile__go {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: auto;
+    padding-top: 0.5rem;
+    font-weight: 800;
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+/* -------------------------------------------------------------
+   9. FORMULÁŘE
+   ------------------------------------------------------------- */
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+}
+
+.field__label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-weight: 800;
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.field__hint {
+    font-size: 0.82rem;
+    color: var(--muted);
+}
+
+.input,
+.select,
+.textarea {
+    width: 100%;
+    padding: 0.8rem 1.1rem;
+    min-height: 3.1rem;
+    background: var(--paper);
+    color: var(--ink);
+    font-weight: 600;
+    border: var(--b) solid var(--ink);
+    border-radius: var(--r-pill);
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow 0.14s var(--ease), transform 0.14s var(--ease);
+}
+
+.textarea {
+    border-radius: var(--r-md);
+    min-height: 7rem;
+    resize: vertical;
+    line-height: 1.5;
+}
+
+.input:hover,
+.select:hover,
+.textarea:hover {
+    box-shadow: var(--shadow);
+}
+
+.input:focus,
+.select:focus,
+.textarea:focus {
+    outline: none;
+    transform: translate(-1px, -1px);
+    box-shadow: var(--shadow);
+}
+
+.input::placeholder,
+.textarea::placeholder {
+    color: var(--muted);
+    font-weight: 500;
+}
+
+/* Vlastní šipka selectu — nativní se v B/W režimu chová nepředvídatelně */
+.select {
+    appearance: none;
+    padding-right: 3rem;
+    background-image: linear-gradient(45deg, transparent 50%, currentColor 50%),
+        linear-gradient(135deg, currentColor 50%, transparent 50%);
+    background-position: calc(100% - 1.4rem) center, calc(100% - 1.05rem) center;
+    background-size: 0.4rem 0.4rem, 0.4rem 0.4rem;
+    background-repeat: no-repeat;
+    cursor: pointer;
+}
+
+.select:disabled {
+    color: var(--muted);
+    cursor: not-allowed;
+}
+
+/* Segmentovaný přepínač — nahrazuje rozbalovací seznam tam,
+   kde je možností málo (jeden klik místo tří). */
+.choices {
+    display: grid;
+    gap: 0.6rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 8.5rem), 1fr));
+}
+
+.choice {
+    position: relative;
+    display: flex;
+}
+
+.choice input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.choice__label {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.8rem 1rem;
+    min-height: 3.1rem;
+    background: var(--paper);
+    font-weight: 800;
+    font-size: 0.95rem;
+    text-align: center;
+    text-wrap: balance;
+    border: var(--b) solid var(--ink);
+    border-radius: var(--r-pill);
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.14s var(--ease), box-shadow 0.14s var(--ease),
+        background-color 0.14s var(--ease), color 0.14s var(--ease);
+}
+
+.choice input:hover + .choice__label {
+    box-shadow: var(--shadow);
+}
+
+.choice input:checked + .choice__label {
+    background: var(--ink);
+    color: var(--paper);
+    transform: translate(-2px, -2px);
+    box-shadow: var(--shadow);
+}
+
+.choice input:focus-visible + .choice__label {
+    outline: var(--b) solid var(--ink);
+    outline-offset: 3px;
+}
+
+.choice input:disabled + .choice__label {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+/* -------------------------------------------------------------
+   10. STATISTIKY
+   ------------------------------------------------------------- */
+.stat {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    padding: 1rem 1.15rem;
+    background: var(--surface);
+    border: var(--b) solid var(--ink);
+    border-radius: var(--r-lg);
+}
+
+.stat--invert {
+    background: var(--ink);
+    color: var(--paper);
+}
+
+.stat__label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    opacity: 0.75;
+}
+
+.stat__value {
+    font-size: clamp(1.9rem, 1.5rem + 1.5vw, 2.6rem);
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Ukazatel úspěšnosti — plný pruh místo barevného rozlišení */
+.meter {
+    height: 1.15rem;
+    padding: 3px;
+    background: var(--paper);
+    border: var(--b) solid var(--ink);
+    border-radius: var(--r-pill);
+    overflow: hidden;
+}
+
+.meter__fill {
+    display: block;
+    height: 100%;
+    width: 0%;
+    background: var(--ink);
+    border-radius: var(--r-pill);
+    transition: width 0.4s var(--ease);
+}
+
+/* -------------------------------------------------------------
+   11. SEZNAM TIPŮ
+   ------------------------------------------------------------- */
+.tips {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap);
+    list-style: none;
+    padding: 0;
+}
+
+.tip {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    padding: 1.15rem;
+    background: var(--paper);
+    border: var(--b) solid var(--ink);
+    border-radius: var(--r-lg);
+    box-shadow: var(--shadow);
+}
+
+/* Vyhodnocené tipy se odlišují tvarem a výplní, ne barvou */
+.tip--correct {
+    background: var(--ink);
+    color: var(--paper);
+}
+
+.tip--correct .tip__key,
+.tip--correct .tip__meta {
+    opacity: 0.7;
+}
+
+/* Špatný tip: přerušovaný rámeček bez stínu — odlišen tvarem, ne barvou */
+.tip--wrong {
+    background: var(--surface);
+    border-style: dashed;
+    box-shadow: none;
+}
+
+.tip__head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.tip__match {
+    font-weight: 900;
+    font-size: 1.05rem;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+}
+
+.tip__rows {
+    display: grid;
+    gap: 0.4rem;
+}
+
+.tip__row {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    flex-wrap: wrap;
+}
+
+.tip__key {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-width: 7.5rem;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.tip--correct .tip__key {
+    color: inherit;
+}
+
+.tip__value {
+    font-weight: 700;
+}
+
+.tip__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding-top: 0.15rem;
+}
+
+.tip--correct .btn {
+    --btn-bg: var(--paper);
+    --btn-fg: var(--ink);
+    border-color: var(--paper);
+    box-shadow: 3px 3px 0 var(--paper);
+}
+
+.tip--correct .btn:hover {
+    box-shadow: 5px 5px 0 var(--paper);
+}
+
+.tip--correct .btn[aria-pressed="true"] {
+    --btn-bg: var(--ink);
+    --btn-fg: var(--paper);
+}
+
+.btn[aria-pressed="true"] {
+    --btn-bg: var(--ink);
+    --btn-fg: var(--paper);
+}
+
+.tip__meta {
+    font-size: 0.75rem;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+}
+
+/* Štítek stavu */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.3rem 0.75rem;
+    font-size: 0.68rem;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    border: var(--b-thin) solid currentColor;
+    border-radius: var(--r-pill);
+}
+
+.badge--solid {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+}
+
+.tip--correct .badge--solid {
+    background: var(--paper);
+    color: var(--ink);
+    border-color: var(--paper);
+}
+
+/* -------------------------------------------------------------
+   12. PRÁZDNÝ STAV
+   ------------------------------------------------------------- */
+.empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+    padding: clamp(1.75rem, 6vw, 3rem) 1.25rem;
+    text-align: center;
+    color: var(--muted);
+    border: var(--b) dashed var(--ink);
+    border-radius: var(--r-xl);
+}
+
+.empty__icon {
+    display: grid;
+    place-items: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    color: var(--ink);
+    border: var(--b) solid var(--ink);
+    border-radius: 50%;
+}
+
+.empty__title {
+    font-weight: 900;
+    font-size: 1.05rem;
+    text-transform: uppercase;
+    color: var(--ink);
+}
+
+.empty p {
+    max-width: 34ch;
+    text-wrap: pretty;
+}
+
+/* -------------------------------------------------------------
+   13. TOAST (nahrazuje alert())
+   ------------------------------------------------------------- */
+.toast {
+    position: fixed;
+    left: 50%;
+    bottom: 1.5rem;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    width: max-content;
+    max-width: calc(100% - 2rem);
+    padding: 0.85rem 1.4rem;
+    background: var(--ink);
+    color: var(--paper);
+    font-weight: 800;
+    border: var(--b) solid var(--ink);
+    border-radius: var(--r-pill);
+    box-shadow: var(--shadow);
+    transform: translate(-50%, 150%);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.3s var(--ease), opacity 0.3s var(--ease);
+}
+
+.toast[data-open="true"] {
+    transform: translate(-50%, 0);
+    opacity: 1;
+}
+
+/* -------------------------------------------------------------
+   14. PATIČKA
+   ------------------------------------------------------------- */
+.footer {
+    margin-top: clamp(2rem, 6vw, 3.5rem);
+    padding-top: 1.25rem;
+    border-top: var(--b) solid var(--ink);
+    font-size: 0.82rem;
+    color: var(--muted);
+}
+
+.footer a {
+    color: inherit;
+    font-weight: 700;
+    text-underline-offset: 3px;
+}
+
+/* -------------------------------------------------------------
+   15. PŘÍSTUPNOST
+   ------------------------------------------------------------- */
+.skip-link {
+    position: absolute;
+    top: 0.75rem;
+    left: 50%;
+    z-index: 100;
+    padding: 0.7rem 1.3rem;
+    background: var(--ink);
+    color: var(--paper);
+    font-weight: 800;
+    text-decoration: none;
+    border-radius: var(--r-pill);
+    transform: translate(-50%, -250%);
+    transition: transform 0.2s var(--ease);
+}
+
+.skip-link:focus-visible {
+    transform: translate(-50%, 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    .btn:hover,
+    .tile:hover,
+    .input:focus,
+    .select:focus,
+    .textarea:focus {
+        transform: none;
+    }
+}
+
+@media print {
+    body {
+        background: #fff;
+        color: #000;
+    }
+
+    .topbar__actions,
+    .tip__actions,
+    .toast,
+    .skip-link {
+        display: none !important;
+    }
+
+    .card,
+    .tip {
+        box-shadow: none;
+        break-inside: avoid;
+    }
 }

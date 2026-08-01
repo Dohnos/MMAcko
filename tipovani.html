@@ -1,49 +1,268 @@
 <!DOCTYPE html>
-<html lang="cs">
+<html lang="cs" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Vyber vítěze a způsob ukončení MMA zápasu a sleduj svou úspěšnost.">
+    <meta name="color-scheme" content="light dark">
+    <meta name="theme-color" content="#ffffff">
     <title>Tipování | MMA Tipování</title>
     <link rel="icon" href="https://i.postimg.cc/7Y8yd0bW/favicon-ico.png" type="image/png">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <script>
+        (function () {
+            var saved = null;
+            try { saved = localStorage.getItem('mmaTheme'); } catch (e) { /* privátní režim */ }
+            var dark = saved ? saved === 'dark'
+                : window.matchMedia('(prefers-color-scheme: dark)').matches;
+            document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+        })();
+    </script>
 </head>
 <body>
-    <div class="container mt-5">
-        <h2><strong>🏆 Vyberte zápas a tipujte!</strong></h2>
-        <form id="tipFormDetails" class="mt-4">
-            <div class="mb-3">
-                <label for="match" class="form-label">🛡️ Zápas:</label>
-                <select id="match" class="form-select"></select>
-            </div>
-            <div class="mb-3">
-                <label for="winner" class="form-label">👑 Vítěz:</label>
-                <select id="winner" class="form-select">
-                    <option value="">Vyberte zápas</option>
-                </select>
-            </div>
-            <div class="mb-3">
-                <label for="method" class="form-label">⚔️ Způsob ukončení:</label>
-                <select id="method" class="form-select">
-                    <option value="KO">🥊 KO</option>
-                    <option value="TKO">💥 TKO</option>
-                    <option value="SUBMISE">🤼 SUBMISE</option>
-                    <option value="BODY">📊 BODY</option>
-                </select>
-            </div>
-            <button type="submit" class="btn btn-success">💾 Uložit tip</button>
-        </form>
+    <a class="skip-link" href="#main">Přeskočit na obsah</a>
 
-        <div id="savedTips" class="mt-5">
-            <h3>📋 Uložené tipy:</h3>
-            <ul id="tipList" class="list-group"></ul>
-        </div>
+    <!-- Sada ikon (inline SVG — nahrazuje emoji, dědí barvu textu) -->
+    <svg width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute">
+        <defs>
+            <symbol id="i-glove" viewBox="0 0 24 24">
+                <path d="M6 10V6.5a2.5 2.5 0 0 1 5 0V10m0 0V5.5a2.5 2.5 0 0 1 5 0V10m0 0V7.5a2.5 2.5 0 0 1 4 0V15a6 6 0 0 1-6 6h-2a6 6 0 0 1-6-6v-2.5a2 2 0 0 1 4 0"/>
+            </symbol>
+            <symbol id="i-arrow-left" viewBox="0 0 24 24">
+                <path d="M20 12H5M10.5 6l-6 6 6 6"/>
+            </symbol>
+            <symbol id="i-sun" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="4.2"/>
+                <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.2 5.2l1.4 1.4M17.4 17.4l1.4 1.4M18.8 5.2l-1.4 1.4M6.6 17.4l-1.4 1.4"/>
+            </symbol>
+            <symbol id="i-moon" viewBox="0 0 24 24">
+                <path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/>
+            </symbol>
+            <symbol id="i-shield" viewBox="0 0 24 24">
+                <path d="M12 3l8 3v6c0 4.9-3.4 8.5-8 9.6C7.4 20.5 4 16.9 4 12V6z"/>
+            </symbol>
+            <symbol id="i-crown" viewBox="0 0 24 24">
+                <path d="M4.5 18.5h15M4.5 18.5 3 6.5l5.2 4L12 4l3.8 6.5L21 6.5l-1.5 12z"/>
+            </symbol>
+            <symbol id="i-bolt" viewBox="0 0 24 24">
+                <path d="M13.2 2.5 4.5 13.8h6.6L10 21.5l8.9-11.6h-6.7z"/>
+            </symbol>
+            <symbol id="i-save" viewBox="0 0 24 24">
+                <path d="M6 3.5h9.2L20.5 8.8V18a2.5 2.5 0 0 1-2.5 2.5H6A2.5 2.5 0 0 1 3.5 18V6A2.5 2.5 0 0 1 6 3.5z"/>
+                <path d="M8 3.5v5h7v-5"/>
+                <rect x="7.5" y="12.5" width="9" height="8" rx="2.5"/>
+            </symbol>
+            <symbol id="i-list" viewBox="0 0 24 24">
+                <path d="M9 6h11M9 12h11M9 18h11"/>
+                <circle cx="4.5" cy="6" r="1.5" class="icon--fill"/>
+                <circle cx="4.5" cy="12" r="1.5" class="icon--fill"/>
+                <circle cx="4.5" cy="18" r="1.5" class="icon--fill"/>
+            </symbol>
+            <symbol id="i-chart" viewBox="0 0 24 24">
+                <path d="M4 4v16h16"/>
+                <path d="M8.5 20v-5M13 20v-9M17.5 20v-3.5"/>
+            </symbol>
+            <symbol id="i-check" viewBox="0 0 24 24">
+                <path d="M4.5 12.5 9.5 17.5 19.5 6.5"/>
+            </symbol>
+            <symbol id="i-x" viewBox="0 0 24 24">
+                <path d="M6 6l12 12M18 6 6 18"/>
+            </symbol>
+            <symbol id="i-trash" viewBox="0 0 24 24">
+                <path d="M4 6.5h16M9.5 6.5V5a2 2 0 0 1 2-2h1a2 2 0 0 1 2 2v1.5"/>
+                <path d="M6.5 6.5 7.4 19a2.5 2.5 0 0 0 2.5 2.3h4.2a2.5 2.5 0 0 0 2.5-2.3l.9-12.5"/>
+            </symbol>
+            <symbol id="i-target" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="9"/>
+                <circle cx="12" cy="12" r="5"/>
+                <circle cx="12" cy="12" r="1.6" class="icon--fill"/>
+            </symbol>
+            <symbol id="i-percent" viewBox="0 0 24 24">
+                <path d="M19 5 5 19"/>
+                <circle cx="7.5" cy="7.5" r="2.6"/>
+                <circle cx="16.5" cy="16.5" r="2.6"/>
+            </symbol>
+            <symbol id="i-clock" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="9"/>
+                <path d="M12 7v5.3l3.3 2"/>
+            </symbol>
+            <symbol id="i-scale" viewBox="0 0 24 24">
+                <path d="M12 3.5v17M7.5 20.5h9M4.5 7.5h15M12 5.2 4.5 7.5M12 5.2l7.5 2.3"/>
+                <path d="M4.5 7.5 1.9 14a2.85 2.85 0 0 0 5.2 0z"/>
+                <path d="M19.5 7.5 16.9 14a2.85 2.85 0 0 0 5.2 0z"/>
+            </symbol>
+        </defs>
+    </svg>
 
-        <div id="stats" class="mt-4">
-            <h4>📊 Statistika:</h4>
-            <p>Správné tipy: <span id="correctCount">0</span></p>
-            <p>Špatné tipy: <span id="wrongCount">0</span></p>
-        </div>
+    <div class="wrap">
+        <header class="topbar">
+            <a class="brand" href="index.html">
+                <span class="brand__mark" aria-hidden="true">
+                    <svg class="icon"><use href="#i-glove"/></svg>
+                </span>
+                MMA Tipování
+            </a>
+            <div class="topbar__actions">
+                <a href="index.html" class="btn btn--icon" aria-label="Zpět na úvod" title="Zpět na úvod">
+                    <svg class="icon" aria-hidden="true"><use href="#i-arrow-left"/></svg>
+                </a>
+                <button type="button" class="btn btn--icon" id="themeToggle"
+                        aria-label="Přepnout světlý/tmavý režim" title="Přepnout světlý/tmavý režim">
+                    <svg class="icon" id="themeIcon" aria-hidden="true"><use href="#i-moon"/></svg>
+                </button>
+            </div>
+        </header>
+
+        <main id="main" class="stack stack--lg">
+            <!-- ---------- FORMULÁŘ ---------- -->
+            <section class="card card--hero stack" aria-labelledby="formTitle">
+                <div>
+                    <p class="eyebrow">
+                        <svg class="icon" aria-hidden="true"><use href="#i-target"/></svg>
+                        Nový tip
+                    </p>
+                    <h2 id="formTitle">Vyber zápas a tipuj</h2>
+                </div>
+
+                <form id="tipForm" class="stack" novalidate>
+                    <div class="field">
+                        <label class="field__label" for="match">
+                            <svg class="icon" aria-hidden="true"><use href="#i-shield"/></svg>
+                            Zápas
+                        </label>
+                        <select id="match" class="select" required>
+                            <option value="">Načítám zápasy…</option>
+                        </select>
+                        <p class="field__hint" id="matchHint">Seznam se načítá ze souboru matches.txt.</p>
+                    </div>
+
+                    <div class="field">
+                        <span class="field__label" id="winnerLabel">
+                            <svg class="icon" aria-hidden="true"><use href="#i-crown"/></svg>
+                            Vítěz
+                        </span>
+                        <div class="choices" id="winnerChoices" role="radiogroup" aria-labelledby="winnerLabel">
+                            <p class="field__hint">Nejdřív vyber zápas.</p>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <span class="field__label" id="methodLabel">
+                            <svg class="icon" aria-hidden="true"><use href="#i-bolt"/></svg>
+                            Způsob ukončení
+                        </span>
+                        <div class="choices" role="radiogroup" aria-labelledby="methodLabel">
+                            <div class="choice">
+                                <input type="radio" name="method" id="m-ko" value="KO" checked>
+                                <label class="choice__label" for="m-ko">KO</label>
+                            </div>
+                            <div class="choice">
+                                <input type="radio" name="method" id="m-tko" value="TKO">
+                                <label class="choice__label" for="m-tko">TKO</label>
+                            </div>
+                            <div class="choice">
+                                <input type="radio" name="method" id="m-sub" value="SUBMISE">
+                                <label class="choice__label" for="m-sub">Submise</label>
+                            </div>
+                            <div class="choice">
+                                <input type="radio" name="method" id="m-dec" value="BODY">
+                                <label class="choice__label" for="m-dec">Body</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn--solid btn--lg btn--block">
+                        <svg class="icon" aria-hidden="true"><use href="#i-save"/></svg>
+                        Uložit tip
+                    </button>
+                </form>
+            </section>
+
+            <!-- ---------- STATISTIKA ---------- -->
+            <section class="stack" aria-labelledby="statsTitle">
+                <h3 id="statsTitle" class="card__title">
+                    <svg class="icon" aria-hidden="true"><use href="#i-chart"/></svg>
+                    Statistika
+                </h3>
+
+                <div class="grid-3">
+                    <div class="stat stat--invert">
+                        <span class="stat__label">
+                            <svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>
+                            Správně
+                        </span>
+                        <span class="stat__value" id="correctCount">0</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat__label">
+                            <svg class="icon" aria-hidden="true"><use href="#i-x"/></svg>
+                            Špatně
+                        </span>
+                        <span class="stat__value" id="wrongCount">0</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat__label">
+                            <svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg>
+                            Čeká na výsledek
+                        </span>
+                        <span class="stat__value" id="pendingCount">0</span>
+                    </div>
+                </div>
+
+                <div class="card stack">
+                    <div class="row row--between">
+                        <span class="stat__label">
+                            <svg class="icon" aria-hidden="true"><use href="#i-percent"/></svg>
+                            Úspěšnost vyhodnocených tipů
+                        </span>
+                        <strong id="accuracyValue" style="font-variant-numeric:tabular-nums">—</strong>
+                    </div>
+                    <div class="meter" role="progressbar" id="accuracyBar"
+                         aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"
+                         aria-labelledby="accuracyValue">
+                        <span class="meter__fill" id="accuracyFill"></span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ---------- ULOŽENÉ TIPY ---------- -->
+            <section class="stack" aria-labelledby="tipsTitle">
+                <div class="row row--between">
+                    <h3 id="tipsTitle" class="card__title">
+                        <svg class="icon" aria-hidden="true"><use href="#i-list"/></svg>
+                        Uložené tipy
+                        <span class="badge" id="tipsCount">0</span>
+                    </h3>
+                    <button type="button" class="btn btn--sm" id="clearAll" hidden>
+                        <svg class="icon" aria-hidden="true"><use href="#i-trash"/></svg>
+                        <span id="clearAllText">Smazat vše</span>
+                    </button>
+                </div>
+
+                <div class="empty" id="tipsEmpty">
+                    <span class="empty__icon" aria-hidden="true">
+                        <svg class="icon icon--lg"><use href="#i-list"/></svg>
+                    </span>
+                    <span class="empty__title">Zatím žádné tipy</span>
+                    <p>Vyber zápas nahoře, tipni si vítěze a způsob ukončení. Tip se objeví tady.</p>
+                </div>
+
+                <ul class="tips" id="tipList"></ul>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p>
+                Tipy jsou uložené jen v tomto prohlížeči.
+                <a href="index.html">Zpět na úvod</a>
+            </p>
+        </footer>
+    </div>
+
+    <!-- Oznámení místo alert() -->
+    <div class="toast" id="toast" role="status" aria-live="polite">
+        <svg class="icon" aria-hidden="true" id="toastIcon"><use href="#i-check"/></svg>
+        <span id="toastText"></span>
     </div>
 
     <script src="script.js"></script>

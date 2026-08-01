@@ -86,10 +86,32 @@
                 <circle cx="12" cy="12" r="9"/>
                 <path d="M12 7v5.3l3.3 2"/>
             </symbol>
-            <symbol id="i-scale" viewBox="0 0 24 24">
-                <path d="M12 3.5v17M7.5 20.5h9M4.5 7.5h15M12 5.2 4.5 7.5M12 5.2l7.5 2.3"/>
-                <path d="M4.5 7.5 1.9 14a2.85 2.85 0 0 0 5.2 0z"/>
-                <path d="M19.5 7.5 16.9 14a2.85 2.85 0 0 0 5.2 0z"/>
+            <symbol id="i-search" viewBox="0 0 24 24">
+                <circle cx="10.5" cy="10.5" r="6.5"/>
+                <path d="M15.5 15.5 21 21"/>
+            </symbol>
+            <symbol id="i-share" viewBox="0 0 24 24">
+                <circle cx="18" cy="5.5" r="2.8"/>
+                <circle cx="6" cy="12" r="2.8"/>
+                <circle cx="18" cy="18.5" r="2.8"/>
+                <path d="M8.5 10.7 15.5 6.9M8.5 13.3l7 3.8"/>
+            </symbol>
+            <symbol id="i-download" viewBox="0 0 24 24">
+                <path d="M12 3.5v12M7.5 11l4.5 4.5 4.5-4.5"/>
+                <path d="M4.5 19.5h15"/>
+            </symbol>
+            <symbol id="i-lock" viewBox="0 0 24 24">
+                <rect x="4.5" y="10" width="15" height="10.5" rx="4"/>
+                <path d="M8 10V7.5a4 4 0 0 1 8 0V10"/>
+            </symbol>
+            <symbol id="i-trophy" viewBox="0 0 24 24">
+                <path d="M7.5 3.5h9V9a4.5 4.5 0 0 1-9 0z"/>
+                <path d="M7.5 5H4.5v1.5A3.5 3.5 0 0 0 8 10M16.5 5h3v1.5A3.5 3.5 0 0 1 16 10"/>
+                <path d="M12 13.5V17M8.5 20.5h7l-.8-3.5H9.3z"/>
+            </symbol>
+            <symbol id="i-fire" viewBox="0 0 24 24">
+                <path d="M12 2.5s5.5 4.2 5.5 9.2a5.5 5.5 0 0 1-11 0c0-1.7.8-3.2 1.8-4.4.4 1 1.2 1.9 2.2 2.1-.6-2.6.6-5.3 1.5-6.9z"/>
+                <path d="M12 21.5a3 3 0 0 1-3-3c0-1.8 3-4 3-4s3 2.2 3 4a3 3 0 0 1-3 3z"/>
             </symbol>
         </defs>
     </svg>
@@ -114,28 +136,48 @@
         </header>
 
         <main id="main" class="stack stack--lg">
-            <!-- ---------- FORMULÁŘ ---------- -->
-            <section class="card card--hero stack" aria-labelledby="formTitle">
+            <!-- ---------- VÝBĚR ZÁPASU ---------- -->
+            <section class="card card--hero stack" aria-labelledby="pickTitle">
+                <div class="row row--between">
+                    <div>
+                        <p class="eyebrow">
+                            <svg class="icon" aria-hidden="true"><use href="#i-shield"/></svg>
+                            Krok 1
+                        </p>
+                        <h2 id="pickTitle">Vyber zápas</h2>
+                    </div>
+                    <span class="badge" id="pickCount">0 / 0 tipnuto</span>
+                </div>
+
+                <div class="field">
+                    <label class="field__label" for="matchSearch">
+                        <svg class="icon" aria-hidden="true"><use href="#i-search"/></svg>
+                        Hledat bojovníka
+                    </label>
+                    <input type="search" id="matchSearch" class="input" placeholder="Např. Máša…"
+                           autocomplete="off" spellcheck="false">
+                </div>
+
+                <div class="matchgrid" id="matchGrid" role="radiogroup" aria-label="Seznam zápasů">
+                    <p class="field__hint">Načítám zápasy…</p>
+                </div>
+            </section>
+
+            <!-- ---------- TIP ---------- -->
+            <section class="card card--hero stack" aria-labelledby="formTitle" id="tipCard">
                 <div>
                     <p class="eyebrow">
                         <svg class="icon" aria-hidden="true"><use href="#i-target"/></svg>
-                        Nový tip
+                        Krok 2
                     </p>
-                    <h2 id="formTitle">Vyber zápas a tipuj</h2>
+                    <h2 id="formTitle">Tipni si výsledek</h2>
+                </div>
+
+                <div class="selected" id="selectedMatch">
+                    <span class="field__hint">Nejdřív vyber zápas nahoře.</span>
                 </div>
 
                 <form id="tipForm" class="stack" novalidate>
-                    <div class="field">
-                        <label class="field__label" for="match">
-                            <svg class="icon" aria-hidden="true"><use href="#i-shield"/></svg>
-                            Zápas
-                        </label>
-                        <select id="match" class="select" required>
-                            <option value="">Načítám zápasy…</option>
-                        </select>
-                        <p class="field__hint" id="matchHint">Seznam se načítá ze souboru matches.txt.</p>
-                    </div>
-
                     <div class="field">
                         <span class="field__label" id="winnerLabel">
                             <svg class="icon" aria-hidden="true"><use href="#i-crown"/></svg>
@@ -171,9 +213,9 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn--solid btn--lg btn--block">
+                    <button type="submit" class="btn btn--solid btn--lg btn--block" id="saveTip">
                         <svg class="icon" aria-hidden="true"><use href="#i-save"/></svg>
-                        Uložit tip
+                        <span id="saveTipText">Uložit tip</span>
                     </button>
                 </form>
             </section>
@@ -186,14 +228,14 @@
                 </h3>
 
                 <div class="grid-3">
-                    <div class="stat stat--invert">
+                    <div class="stat stat--correct">
                         <span class="stat__label">
                             <svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>
                             Správně
                         </span>
                         <span class="stat__value" id="correctCount">0</span>
                     </div>
-                    <div class="stat">
+                    <div class="stat stat--wrong">
                         <span class="stat__label">
                             <svg class="icon" aria-hidden="true"><use href="#i-x"/></svg>
                             Špatně
@@ -202,25 +244,80 @@
                     </div>
                     <div class="stat">
                         <span class="stat__label">
-                            <svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg>
-                            Čeká na výsledek
+                            <svg class="icon" aria-hidden="true"><use href="#i-fire"/></svg>
+                            Nejdelší série
                         </span>
-                        <span class="stat__value" id="pendingCount">0</span>
+                        <span class="stat__value" id="streakCount">0</span>
                     </div>
                 </div>
 
                 <div class="card stack">
-                    <div class="row row--between">
-                        <span class="stat__label">
-                            <svg class="icon" aria-hidden="true"><use href="#i-percent"/></svg>
-                            Úspěšnost vyhodnocených tipů
-                        </span>
-                        <strong id="accuracyValue" style="font-variant-numeric:tabular-nums">—</strong>
+                    <div class="progress">
+                        <div class="progress__head">
+                            <span>
+                                <svg class="icon" aria-hidden="true"><use href="#i-percent"/></svg>
+                                Úspěšnost vyhodnocených tipů
+                            </span>
+                            <strong id="accuracyValue" style="font-variant-numeric:tabular-nums">—</strong>
+                        </div>
+                        <div class="meter meter--split" role="progressbar" id="accuracyBar"
+                             aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"
+                             aria-labelledby="accuracyValue">
+                            <span class="meter__fill" id="accuracyFill"></span>
+                        </div>
                     </div>
-                    <div class="meter" role="progressbar" id="accuracyBar"
-                         aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"
-                         aria-labelledby="accuracyValue">
-                        <span class="meter__fill" id="accuracyFill"></span>
+
+                    <div class="progress">
+                        <div class="progress__head">
+                            <span>
+                                <svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg>
+                                Vyhodnoceno tipů
+                            </span>
+                            <span class="progress__value" id="judgedValue">0 / 0</span>
+                        </div>
+                        <div class="meter">
+                            <span class="meter__fill" id="judgedFill"></span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ---------- SDÍLENÍ ---------- -->
+            <section class="stack" aria-labelledby="shareTitle">
+                <h3 id="shareTitle" class="card__title">
+                    <svg class="icon" aria-hidden="true"><use href="#i-share"/></svg>
+                    Sdílet výsledky
+                </h3>
+
+                <div class="share--locked" id="shareLocked">
+                    <span class="empty__icon" aria-hidden="true">
+                        <svg class="icon icon--lg"><use href="#i-lock"/></svg>
+                    </span>
+                    <span class="empty__title">Karta se odemkne po turnaji</span>
+                    <p id="shareLockedText">
+                        Tipni všechny zápasy a označ u nich výsledek. Pak vygeneruju obrázek
+                        na Instagram a Facebook.
+                    </p>
+                </div>
+
+                <div class="card stack" id="sharePanel" hidden>
+                    <p class="field__hint">
+                        Hotovo — tvoje karta je připravená. Formát 1080 × 1350 px sedí na
+                        příspěvek na Instagramu i Facebooku.
+                    </p>
+                    <div class="share__preview">
+                        <canvas id="shareCanvas" width="1080" height="1350"
+                                role="img" aria-label="Náhled sdílecí karty s tvými tipy"></canvas>
+                    </div>
+                    <div class="row">
+                        <button type="button" class="btn btn--solid" id="downloadShare">
+                            <svg class="icon" aria-hidden="true"><use href="#i-download"/></svg>
+                            Stáhnout obrázek
+                        </button>
+                        <button type="button" class="btn" id="shareNative" hidden>
+                            <svg class="icon" aria-hidden="true"><use href="#i-share"/></svg>
+                            Sdílet…
+                        </button>
                     </div>
                 </div>
             </section>

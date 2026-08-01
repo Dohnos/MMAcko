@@ -10,12 +10,23 @@
 :root {
     color-scheme: light dark;
 
-    /* Paleta — pouze černá, bílá a odstíny šedi */
+    /* Základ zůstává černobílý */
     --ink: #000000;
     --paper: #ffffff;
     --surface: #f4f4f4;
     --muted: #6b6b6b;
     --hairline: #dcdcdc;
+
+    /* Akcenty nesou význam, ne dekoraci:
+       roh bojovníka a vyhodnocení tipu. Vše ostatní zůstává B&W. */
+    --red: #c42b1c;
+    --blue: #1350b0;
+    --green: #12723c;
+    --on-accent: #ffffff;
+
+    /* Jemné podbarvení pro plochy, kde by plná barva překřičela layout */
+    --red-soft: #fdeceb;
+    --blue-soft: #eaf0fb;
 
     /* Rámečky */
     --b: 3px;
@@ -49,6 +60,12 @@
         --surface: #171717;
         --muted: #a3a3a3;
         --hairline: #2e2e2e;
+
+        --red: #d8402f;
+        --blue: #2a6fd6;
+        --green: #17864a;
+        --red-soft: #2a1512;
+        --blue-soft: #101b2e;
     }
 }
 
@@ -59,6 +76,12 @@
     --surface: #f4f4f4;
     --muted: #6b6b6b;
     --hairline: #dcdcdc;
+
+    --red: #c42b1c;
+    --blue: #1350b0;
+    --green: #12723c;
+    --red-soft: #fdeceb;
+    --blue-soft: #eaf0fb;
 }
 
 :root[data-theme="dark"] {
@@ -67,6 +90,12 @@
     --surface: #171717;
     --muted: #a3a3a3;
     --hairline: #2e2e2e;
+
+    --red: #d8402f;
+    --blue: #2a6fd6;
+    --green: #17864a;
+    --red-soft: #2a1512;
+    --blue-soft: #101b2e;
 }
 
 /* -------------------------------------------------------------
@@ -644,6 +673,187 @@ h4 {
     cursor: not-allowed;
 }
 
+/* Barevné varianty přepínače — kopírují roh bojovníka */
+.choice--red input:checked + .choice__label {
+    background: var(--red);
+    color: var(--on-accent);
+}
+
+.choice--blue input:checked + .choice__label {
+    background: var(--blue);
+    color: var(--on-accent);
+}
+
+/* Na barevné výplni už roh nese samo tlačítko — tečka se zesvětlí,
+   aby nesplynula s pozadím */
+.choice input:checked + .choice__label .dot {
+    background: currentColor;
+}
+
+/* Kolečko rohu — červený vlevo, modrý vpravo */
+.dot {
+    display: inline-block;
+    width: 0.85rem;
+    height: 0.85rem;
+    flex: 0 0 auto;
+    border: var(--b-thin) solid currentColor;
+    border-radius: 50%;
+}
+
+.dot--red {
+    background: var(--red);
+}
+
+.dot--blue {
+    background: var(--blue);
+}
+
+/* -------------------------------------------------------------
+   9b. VÝBĚR ZÁPASU — dlaždice místo rozbalovacího seznamu
+   ------------------------------------------------------------- */
+.matchgrid {
+    display: grid;
+    gap: 0.7rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));
+}
+
+.matchcard {
+    position: relative;
+    display: flex;
+}
+
+.matchcard input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.matchcard__body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.85rem 1rem;
+    background: var(--paper);
+    border: var(--b) solid var(--ink);
+    border-radius: var(--r-lg);
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.14s var(--ease), box-shadow 0.14s var(--ease),
+        background-color 0.14s var(--ease), color 0.14s var(--ease);
+}
+
+.matchcard input:hover + .matchcard__body {
+    transform: translate(-2px, -2px);
+    box-shadow: var(--shadow);
+}
+
+.matchcard input:checked + .matchcard__body {
+    background: var(--ink);
+    color: var(--paper);
+    transform: translate(-3px, -3px);
+    box-shadow: var(--shadow-lg);
+}
+
+.matchcard input:focus-visible + .matchcard__body {
+    outline: var(--b) solid var(--ink);
+    outline-offset: 3px;
+}
+
+.matchcard__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.matchcard__no {
+    font-size: 0.68rem;
+    font-weight: 900;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    opacity: 0.65;
+    font-variant-numeric: tabular-nums;
+}
+
+.matchcard__flag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.15rem 0.55rem;
+    font-size: 0.62rem;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    border: var(--b-thin) solid currentColor;
+    border-radius: var(--r-pill);
+}
+
+.matchcard__fighter {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 800;
+    font-size: 0.95rem;
+    line-height: 1.2;
+}
+
+.matchcard__vs {
+    align-self: center;
+    font-size: 0.62rem;
+    font-weight: 900;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    opacity: 0.5;
+}
+
+/* Zvýraznění shody při hledání */
+.matchcard mark {
+    padding: 0 0.15em;
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: var(--r-sm);
+}
+
+.matchcard input:checked + .matchcard__body mark {
+    background: var(--paper);
+    color: var(--ink);
+}
+
+/* Panel vybraného zápasu nad formulářem */
+.selected {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 0.9rem 1.15rem;
+    background: var(--surface);
+    border: var(--b) solid var(--ink);
+    border-radius: var(--r-lg);
+    text-align: center;
+}
+
+.selected__fighter {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-weight: 900;
+    font-size: 1.05rem;
+}
+
+.selected__vs {
+    font-size: 0.7rem;
+    font-weight: 900;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
 /* -------------------------------------------------------------
    10. STATISTIKY
    ------------------------------------------------------------- */
@@ -660,6 +870,16 @@ h4 {
 .stat--invert {
     background: var(--ink);
     color: var(--paper);
+}
+
+.stat--correct {
+    background: var(--green);
+    color: var(--on-accent);
+}
+
+.stat--wrong {
+    background: var(--red);
+    color: var(--on-accent);
 }
 
 .stat__label {
@@ -700,6 +920,71 @@ h4 {
     transition: width 0.4s var(--ease);
 }
 
+/* Ukazatel s barevnou výplní (podíl správných tipů) */
+.meter--split .meter__fill {
+    background: var(--green);
+}
+
+/* -------------------------------------------------------------
+   10b. SDÍLECÍ KARTA
+   ------------------------------------------------------------- */
+.share__preview {
+    display: flex;
+    justify-content: center;
+    padding: var(--gap);
+    background: var(--surface);
+    border: var(--b) solid var(--ink);
+    border-radius: var(--r-lg);
+}
+
+.share__preview canvas {
+    width: 100%;
+    max-width: 20rem;
+    height: auto;
+    border: var(--b) solid var(--ink);
+    border-radius: var(--r-md);
+    box-shadow: var(--shadow);
+}
+
+/* Zamčený stav, dokud nejsou všechny tipy vyhodnocené */
+.share--locked {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+    padding: clamp(1.5rem, 5vw, 2.25rem) 1.25rem;
+    text-align: center;
+    color: var(--muted);
+    border: var(--b) dashed var(--ink);
+    border-radius: var(--r-xl);
+}
+
+.share--locked .empty__title {
+    color: var(--ink);
+}
+
+.progress {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.progress__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6rem;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.progress__value {
+    font-variant-numeric: tabular-nums;
+    color: var(--muted);
+}
+
 /* -------------------------------------------------------------
    11. SEZNAM TIPŮ
    ------------------------------------------------------------- */
@@ -722,22 +1007,24 @@ h4 {
     box-shadow: var(--shadow);
 }
 
-/* Vyhodnocené tipy se odlišují tvarem a výplní, ne barvou */
+/* Vyhodnocený tip: zelený když sedl, červený když ne.
+   Černý rámeček i stín zůstávají — barva je výplň, ne celý styl. */
 .tip--correct {
-    background: var(--ink);
-    color: var(--paper);
+    background: var(--green);
+    color: var(--on-accent);
+}
+
+.tip--wrong {
+    background: var(--red);
+    color: var(--on-accent);
 }
 
 .tip--correct .tip__key,
-.tip--correct .tip__meta {
-    opacity: 0.7;
-}
-
-/* Špatný tip: přerušovaný rámeček bez stínu — odlišen tvarem, ne barvou */
-.tip--wrong {
-    background: var(--surface);
-    border-style: dashed;
-    box-shadow: none;
+.tip--correct .tip__meta,
+.tip--wrong .tip__key,
+.tip--wrong .tip__meta {
+    color: inherit;
+    opacity: 0.8;
 }
 
 .tip__head {
@@ -778,12 +1065,18 @@ h4 {
     color: var(--muted);
 }
 
-.tip--correct .tip__key {
-    color: inherit;
-}
-
 .tip__value {
     font-weight: 700;
+}
+
+/* Na barevné kartě dostane hodnota bílou pilulku, aby zůstala
+   čitelná i tečka rohu */
+.tip--correct .tip__value,
+.tip--wrong .tip__value {
+    padding: 0.1rem 0.7rem;
+    background: var(--paper);
+    color: var(--ink);
+    border-radius: var(--r-pill);
 }
 
 .tip__actions {
@@ -793,18 +1086,22 @@ h4 {
     padding-top: 0.15rem;
 }
 
-.tip--correct .btn {
+/* Na barevné výplni potřebují tlačítka bílý rámeček i stín, jinak zaniknou */
+.tip--correct .btn,
+.tip--wrong .btn {
     --btn-bg: var(--paper);
     --btn-fg: var(--ink);
     border-color: var(--paper);
     box-shadow: 3px 3px 0 var(--paper);
 }
 
-.tip--correct .btn:hover {
+.tip--correct .btn:hover,
+.tip--wrong .btn:hover {
     box-shadow: 5px 5px 0 var(--paper);
 }
 
-.tip--correct .btn[aria-pressed="true"] {
+.tip--correct .btn[aria-pressed="true"],
+.tip--wrong .btn[aria-pressed="true"] {
     --btn-bg: var(--ink);
     --btn-fg: var(--paper);
 }
@@ -841,7 +1138,8 @@ h4 {
     border-color: var(--ink);
 }
 
-.tip--correct .badge--solid {
+.tip--correct .badge--solid,
+.tip--wrong .badge--solid {
     background: var(--paper);
     color: var(--ink);
     border-color: var(--paper);

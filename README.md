@@ -5,10 +5,11 @@ Webová aplikace pro tipování výsledků MMA zápasů. Uživatel tipuje vítě
 
 ## Funkce
 - **Úvodní stránka**: Rozcestník mezi tipováním a bodovací aplikací [MMAJudge](https://dohnos.github.io/MMAJudge/).
-- **Výběr zápasů**: Zápasy se načítají ze souboru `matches.txt`.
-- **Tipování**: Vítěz i způsob ukončení se volí jedním klepnutím — segmentovaný přepínač místo rozbalovacích seznamů.
-- **Uložené tipy**: Přehled tipů s možností označit výsledek nebo tip smazat. Opětovné klepnutí na už zvolený stav vyhodnocení zruší.
-- **Statistika**: Počet správných, špatných a nevyhodnocených tipů plus procentuální úspěšnost.
+- **Výběr zápasů**: Všechny zápasy jsou hned vidět jako dlaždice s barevně odlišenými rohy — červený nahoře, modrý dole. Dlaždice ukazuje, jestli je zápas už tipnutý a jak dopadl. K tomu vyhledávání podle jména bojovníka se zvýrazněním shody.
+- **Tipování**: Vítěz i způsob ukončení se volí jedním klepnutím — segmentovaný přepínač místo rozbalovacích seznamů. Tlačítko vítěze se obarví podle rohu. Po uložení aplikace sama přeskočí na první ještě netipnutý zápas.
+- **Uložené tipy**: Správný tip zezelená, špatný zčervená. Tip lze smazat a opětovné klepnutí na už zvolený stav vyhodnocení zruší.
+- **Statistika**: Počet správných a špatných tipů, nejdelší série správných tipů, procentuální úspěšnost a postup vyhodnocování.
+- **Sdílecí karta**: Jakmile jsou všechny zápasy tipnuté a vyhodnocené, aplikace vykreslí obrázek 1080 × 1350 px pro Instagram a Facebook — se skóre, úspěšností a přehledem všech tipů. Lze ho stáhnout nebo poslat přes systémové sdílení.
 - **Světlý a tmavý režim**: Přepínač v hlavičce, volba se pamatuje.
 - **Responzivní design**: Od mobilu po desktop.
 
@@ -16,7 +17,7 @@ Webová aplikace pro tipování výsledků MMA zápasů. Uživatel tipuje vítě
 Minimalistický **neobrutalismus** v čistě černobílé paletě:
 - silné rámečky a ostré (neblurované) offsetové stíny,
 - výhradně zaoblené tvary — žádné ostré rohy,
-- stavy se rozlišují tvarem a výplní, nikoliv barvou (správný tip = plná výplň, špatný = přerušovaný rámeček),
+- barva nese význam, ne dekoraci: červený a modrý roh bojovníka, zelený správný tip a červený špatný. Všechno ostatní zůstává černobílé,
 - emoji jsou nahrazená inline SVG ikonami, které dědí barvu textu a fungují i offline.
 
 ## Technologie

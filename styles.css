@@ -766,8 +766,12 @@ h4 {
 .matchcard__head {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     gap: 0.5rem;
+}
+
+/* Stav tipu se drží u pravého okraje, štítek zůstává u čísla zápasu */
+.matchcard__flag {
+    margin-left: auto;
 }
 
 .matchcard__no {
@@ -777,6 +781,31 @@ h4 {
     text-transform: uppercase;
     opacity: 0.65;
     font-variant-numeric: tabular-nums;
+}
+
+/* Značka zápasu, například titulkový souboj */
+.matchcard__tag {
+    display: inline-block;
+    margin-left: 0.45rem;
+    padding: 0.05rem 0.5rem;
+    background: var(--ink);
+    color: var(--paper);
+    font-size: 0.6rem;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    vertical-align: 0.05em;
+    border-radius: var(--r-pill);
+}
+
+.matchcard input:checked + .matchcard__body .matchcard__tag {
+    background: var(--paper);
+    color: var(--ink);
+}
+
+.tip--correct .matchcard__tag,
+.tip--wrong .matchcard__tag {
+    background: var(--paper);
+    color: var(--ink);
 }
 
 .matchcard__flag {

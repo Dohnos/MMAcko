@@ -59,9 +59,20 @@
         return dot;
     }
 
+    /* Zápas může nést značku v závorce na konci, například
+       "A vs B (TITLE)". Značku odděl, ať se nelepí na jméno bojovníka. */
+    function matchTag(match) {
+        var found = String(match).match(/\(([^)]+)\)\s*$/);
+        return found ? found[1].trim() : '';
+    }
+
+    function stripTag(match) {
+        return String(match).replace(/\s*\([^)]+\)\s*$/, '').trim();
+    }
+
     /* Rozdělí "A vs B" na jména bojovníků. */
     function splitFighters(match) {
-        var parts = match.split(' vs ');
+        var parts = stripTag(match).split(' vs ');
         return [(parts[0] || '').trim(), (parts[1] || '').trim()];
     }
 
@@ -232,7 +243,17 @@
             var no = document.createElement('span');
             no.className = 'matchcard__no';
             no.textContent = 'Zápas ' + (index + 1);
+
             head.appendChild(no);
+
+            // Štítek je mimo .matchcard__no — to má sníženou průhlednost
+            var tag = matchTag(match);
+            if (tag) {
+                var tagEl = document.createElement('strong');
+                tagEl.className = 'matchcard__tag';
+                tagEl.textContent = tag;
+                head.appendChild(tagEl);
+            }
 
             if (tip) {
                 var flag = document.createElement('span');
@@ -480,7 +501,16 @@
 
             var matchName = document.createElement('span');
             matchName.className = 'tip__match';
-            matchName.textContent = tip.match;
+            matchName.textContent = stripTag(tip.match);
+
+            var matchTagText = matchTag(tip.match);
+            if (matchTagText) {
+                var tagEl = document.createElement('strong');
+                tagEl.className = 'matchcard__tag';
+                tagEl.textContent = matchTagText;
+                matchName.appendChild(tagEl);
+            }
+
             head.appendChild(matchName);
 
             var badge = document.createElement('span');
@@ -916,7 +946,8 @@
 
         /* Kolečko rohu, ze kterého byl vítěz tipnutý.
            Bílý podklad drží červený roh viditelný i na červené kartě. */
-        var corner = tip.match.split(' vs ')[0].trim() === tip.winner ? CARD.red : CARD.blue;
+        var corner = tip.match.replace(/\s*\([^)]+\)\s*$/, '').trim().split(' vs ')[0].trim() === tip.winner
+            ? CARD.red : CARD.blue;
         ctx.beginPath();
         ctx.arc(x + 42, centerY, 15, 0, Math.PI * 2);
         ctx.fillStyle = CARD.paper;
